@@ -13,3 +13,12 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# No Jetbrains
+.idea/
+
+# No vscode
+.vscode/
+
+# No coverage.html
+coverage.html
