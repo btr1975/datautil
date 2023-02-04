@@ -1,4 +1,4 @@
-package yaml
+package json
 
 import "testing"
 
@@ -30,18 +30,10 @@ type ntp struct {
 	} `yaml,json:"ntp" xml:"ntp"`
 }
 
-var ntpYaml = `
-ntp:
-  source_interface: Vlan10
-  ntp_servers:
-    - ipv4_host: 10.0.0.106
-      priority: false
-    - ipv4_host: 10.0.0.200
-      priority: true
-`
+var ntpJson = "{\"ntp\":{\"source_interface\":\"Vlan10\",\"ntp_servers\":[{\"ipv_4_host\":\"10.0.0.106\",\"priority\":false},{\"ipv_4_host\":\"10.0.0.200\",\"priority\":true}]}}\n"
 
-func TestYAMLToStruct(t *testing.T) {
-	structData, err := YAMLToStruct(ntp{}, ntpYaml)
+func TestJSONToStruct(t *testing.T) {
+	structData, err := JSONToStruct(ntp{}, ntpJson)
 
 	if err != nil {
 		t.Errorf("FAILED: YAMLToStruct error %v", err)
@@ -51,13 +43,13 @@ func TestYAMLToStruct(t *testing.T) {
 	}
 }
 
-func TestStructToYAML(t *testing.T) {
-	yamlData, err := StructToYAML(ntp{})
+func TestStructToJSON(t *testing.T) {
+	jsonData, err := StructToJSON(ntp{})
 
 	if err != nil {
-		t.Errorf("FAILED: TestStructToYAML error %v", err)
+		t.Errorf("FAILED: StructToJSON error %v", err)
 	} else {
-		t.Logf("PASSED: TestStructToYAML %v", yamlData)
+		t.Logf("PASSED: StructToJSON %v", jsonData)
 
 	}
 }

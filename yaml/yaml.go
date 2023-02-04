@@ -1,3 +1,6 @@
+/*
+Package yaml has some utilities for YAML codec
+*/
 package yaml
 
 import (
