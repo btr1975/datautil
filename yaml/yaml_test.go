@@ -22,12 +22,12 @@ import "testing"
 //	  - ipv4_host: 10.0.0.106
 type ntp struct {
 	NTPServersData struct {
-		SourceInterface string `yaml,json:"source_interface" xml:"source_interface"`
+		SourceInterface string `yaml:"source_interface" json:"source_interface" xml:"source_interface"`
 		NTPServerKey    []struct {
-			IPv4Host string `yaml,json:"ipv4_host" xml:"ipv4_host"`
-			Priority bool   `yaml,json:"priority" xml:"priority"`
-		} `yaml,json:"ntp_servers" xml:"ntp_servers"`
-	} `yaml,json:"ntp" xml:"ntp"`
+			IPv4Host string `yaml:"ipv4_host" json:"ipv4_host" xml:"ipv4_host"`
+			Priority bool   `yaml:"priority" json:"priority" xml:"priority"`
+		} `yaml:"ntp_servers" json:"ntp_servers" xml:"ntp_servers"`
+	} `yaml:"ntp" json:"ntp" xml:"ntp"`
 }
 
 var ntpYaml = `
@@ -41,12 +41,27 @@ ntp:
 `
 
 func TestYAMLToStruct(t *testing.T) {
-	structData, err := YAMLToStruct(ntp{}, ntpYaml)
+	var tempVar ntp
+
+	err := YAMLToStruct(&tempVar, ntpYaml)
 
 	if err != nil {
 		t.Errorf("FAILED: YAMLToStruct error %v", err)
 	} else {
-		t.Logf("PASSED: YAMLToStruct %v", structData)
+		t.Logf("PASSED: YAMLToStruct error %v", err)
+
+	}
+}
+
+func TestYAMLToStructBad(t *testing.T) {
+	var tempVar ntp
+
+	err := YAMLToStruct(tempVar, ntpYaml)
+
+	if err == nil {
+		t.Errorf("FAILED: YAMLToStruct error %v", err)
+	} else {
+		t.Logf("PASSED: YAMLToStruct error %v", err)
 
 	}
 }
