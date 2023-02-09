@@ -22,3 +22,6 @@
 
 # No coverage.html
 coverage.html
+
+# Ignore temp file
+temp_main.go
