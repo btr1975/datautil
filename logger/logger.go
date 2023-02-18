@@ -9,12 +9,37 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+// zapConsoleLogger creates a zap console logger
+//
+//	:param level: The logging level "info", "warn", or "error" default: "info"
+func zapConsoleLogger(level string) *zap.Logger {
+	switch level {
+	case "info":
+		levelOpt := zap.IncreaseLevel(zapcore.LevelOf(zapcore.InfoLevel))
+		logger, _ := zap.NewProduction(levelOpt)
+		return logger
+	case "warn":
+		levelOpt := zap.IncreaseLevel(zapcore.LevelOf(zapcore.WarnLevel))
+		logger, _ := zap.NewProduction(levelOpt)
+		return logger
+	case "error":
+		levelOpt := zap.IncreaseLevel(zapcore.LevelOf(zapcore.ErrorLevel))
+		logger, _ := zap.NewProduction(levelOpt)
+		return logger
+	default:
+		levelOpt := zap.IncreaseLevel(zapcore.LevelOf(zapcore.InfoLevel))
+		logger, _ := zap.NewProduction(levelOpt)
+		return logger
+	}
+}
+
 // zapFileLogger implements zap logger
 //
-// Example
-//
-//	zlog := zapFileLogger()
-//	zlog.Info("A log message")
+//	:param path: The path and file name of the log
+//	:param level: The logging level "debug", "info", "warn" or "error" default: "info"
+//	:param maxSizeMB: The maximum log file size before rotation
+//	:param maxAgeDays: The maximum days before file rotation
+//	:param maxBackupsTotal: The maximum backups to keep
 func zapFileLogger(path string, level string, maxSizeMB int, maxAgeDays int, maxBackupsTotal int) *zap.Logger {
 	config := zap.NewProductionEncoderConfig()
 	config.EncodeTime = zapcore.ISO8601TimeEncoder
@@ -36,6 +61,11 @@ func zapFileLogger(path string, level string, maxSizeMB int, maxAgeDays int, max
 		writer := zapcore.AddSync(&logRotate)
 		core := zapcore.NewTee(zapcore.NewCore(fileEncoder, writer, defaultLogLevel))
 		return zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
+	case "warn":
+		defaultLogLevel := zapcore.WarnLevel
+		writer := zapcore.AddSync(&logRotate)
+		core := zapcore.NewTee(zapcore.NewCore(fileEncoder, writer, defaultLogLevel))
+		return zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel))
 	case "error":
 		defaultLogLevel := zapcore.ErrorLevel
 		writer := zapcore.AddSync(&logRotate)
@@ -52,7 +82,7 @@ func zapFileLogger(path string, level string, maxSizeMB int, maxAgeDays int, max
 // NewZapFileLogger creates a zap file logger
 //
 //	:param path: The path and file name of the log
-//	:param level: The logging level "debug", "info", or "error" default: "info"
+//	:param level: The logging level "debug", "info", "warn" or "error" default: "info"
 //	:param maxSizeMB: The maximum log file size before rotation
 //	:param maxAgeDays: The maximum days before file rotation
 //	:param maxBackupsTotal: The maximum backups to keep
@@ -63,5 +93,18 @@ func zapFileLogger(path string, level string, maxSizeMB int, maxAgeDays int, max
 //	logger.Info("Some log message")
 func NewZapFileLogger(path string, level string, maxSizeMB int, maxAgeDays int, maxBackupsTotal int) *zap.Logger {
 	return zapFileLogger(path, level, maxSizeMB, maxAgeDays, maxBackupsTotal)
+
+}
+
+// NewZapConsoleLogger creates a zap console logger
+//
+//	:param level: The logging level "info", "warn", or "error" default: "info"
+//
+// Example
+//
+//	logger := NewZapConsoleLogger("info")
+//	logger.Info("Some log message")
+func NewZapConsoleLogger(level string) *zap.Logger {
+	return zapConsoleLogger(level)
 
 }
