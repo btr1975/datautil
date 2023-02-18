@@ -2,7 +2,6 @@ package logger
 
 import (
 	"testing"
-	"time"
 )
 
 func TestNewZapConsoleLogger(t *testing.T) {
@@ -101,5 +100,5 @@ func TestNewZapFileLogger(t *testing.T) {
 			t.Logf("PASSED: %s", scenario.Name)
 		}
 	}
-	time.Sleep(5 * time.Second)
+	t.Logf("NOTICE: This test will fail on Windows due to issues in Windows")
 }
